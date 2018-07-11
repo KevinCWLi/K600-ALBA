@@ -180,11 +180,11 @@ fEventAction(eventAction)
 
     
     //----------------------------------------------------
-    nEnergies += 200;
-    nParticlesPerEnergy = 2000000; // 400000000 particles to be simulated
+    nEnergies += 350;
+    nParticlesPerEnergy = 5000000; // 50000000 particles to be simulated
     
     double energyMin = 0.0;
-    double energyMax = 10.0;
+    double energyMax = 35.0;
     double energyDivision = ((energyMax-energyMin)/nEnergies);
     
     for(int i=0; i<nEnergies; i++)
@@ -481,7 +481,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     fParticleGun->SetParticleEnergy(initialParticleKineticEnergy);
     fEventAction->SetInitialParticleKineticEnergy(initialParticleKineticEnergy);
     
-    
+
     //--------------------------------------------------------------------
     
     //fParticleGun->SetParticleEnergy(1.0*MeV);
@@ -513,7 +513,12 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     fParticleGun->SetParticleMomentumDirection(direction_gamma0);
     fParticleGun->GeneratePrimaryVertex(anEvent); // This generates a particle vertex (essentially produces the particle with all the previous definitions given to fParticleGun)
     
+    fEventAction->SetInitialParticleTheta(theta); // MeV
+    fEventAction->SetInitialParticlePhi(phi); // MeV
     
+    fEventAction->SetInputDist(0, theta);
+    fEventAction->SetInputDist(1, phi);
+
     //fParticleGun->SetParticleMomentumDirection(direction_gamma1);
     //fParticleGun->GeneratePrimaryVertex(anEvent); // This generates a particle vertex (essentially produces the particle with all the previous definitions given to fParticleGun)
     

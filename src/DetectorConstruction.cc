@@ -954,6 +954,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     //  K600 Target Backing
     K600_TargetBacking_Presence = false;
     
+    ////////////////////////////////////////////////
+    ////    New AFRODITE Target Chamber by Mathis
+    AFRODITE_MathisTC_Presence = false;
+
     
     // Define materials
     DefineMaterials();
@@ -980,6 +984,7 @@ void DetectorConstruction::DefineMaterials()
     nistManager->FindOrBuildMaterial("G4_W");
     nistManager->FindOrBuildMaterial("G4_Ar");
     nistManager->FindOrBuildMaterial("G4_Pb");
+    nistManager->FindOrBuildMaterial("G4_Cu");
     nistManager->FindOrBuildMaterial("G4_C");
     nistManager->FindOrBuildMaterial("G4_Li");
     nistManager->FindOrBuildMaterial("G4_CARBON_DIOXIDE");
@@ -1046,6 +1051,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     G4Material* G4_C_Material = G4Material::GetMaterial("G4_C");
     G4Material* G4_Li_Material = G4Material::GetMaterial("G4_Li");
     G4Material* G4_Pb_Material = G4Material::GetMaterial("G4_Pb");
+    G4Material* G4_Cu_Material = G4Material::GetMaterial("G4_Cu");
     
     ////    NIST Defined Materials and Compounds
     G4Material* G4_Galactic_Material = G4Material::GetMaterial("G4_Galactic");
@@ -1143,7 +1149,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     
     G4ThreeVector positionVacuumChamber = G4ThreeVector(0,0,0);
     
-    G4Box* SolidVacuumChamber = new G4Box("VacuumChamber", (200./2)*cm, (200./2)*cm, (200./2)*cm);
+    G4Box* SolidVacuumChamber = new G4Box("VacuumChamber", (400./2)*cm, (400./2)*cm, (400./2)*cm);
     
     G4LogicalVolume* LogicVacuumChamber = new G4LogicalVolume(SolidVacuumChamber, G4_Galactic_Material,"VacuumChamber",0,0,0);
     
@@ -1248,7 +1254,56 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     }
     
     
+    //////////////////////////////////////////////////////////
+    //              Scattering Chamber - CADMesh
+    //////////////////////////////////////////////////////////
     
+    if(AFRODITE_MathisTC_Presence)
+    {
+        G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
+        
+        CADMesh * mesh_MathisTC = new CADMesh("../K600-ALBA/Mesh-Models/STRUCTURES/MathisTC/MathisTC.ply", "PLY", mm, offset_MathisTC, false);
+        
+        G4VSolid * SolidMathisTC = mesh_MathisTC->TessellatedMesh();
+        
+        G4LogicalVolume* LogicMathisTC = new G4LogicalVolume(SolidMathisTC, G4_Al_Material, "BACTAR", 0, 0, 0);
+        
+        /*
+        new G4PVPlacement(0,               // no rotation
+                          G4ThreeVector(), // at (x,y,z)
+                          LogicMathisTC,       // its logical volume
+                          "BACTAR",       // its name
+                          LogicVacuumChamber,         // its mother  volume
+                          false,           // no boolean operations
+                          0,               // copy number
+                          fCheckOverlaps); // checking overlaps
+        */
+        
+        //------------------------------------------------
+        //      Work for Christiaan/Mathis/Katarzyna
+
+        G4RotationMatrix    AFRODITE_MathisTC_rotm;
+        G4ThreeVector       AFRODITE_MathisTC_position = G4ThreeVector();
+
+        AFRODITE_MathisTC_rotm.rotateZ(-90.0*deg);
+        
+        G4Transform3D AFRODITE_MathisTC_transform = G4Transform3D(AFRODITE_MathisTC_rotm, AFRODITE_MathisTC_position);
+
+        new G4PVPlacement(AFRODITE_MathisTC_transform,
+                          LogicMathisTC,       // its logical volume
+                          "BACTAR",       // its name
+                          LogicVacuumChamber,         // its mother  volume
+                          false,           // no boolean operations
+                          0,               // copy number
+                          fCheckOverlaps); // checking overlaps
+        
+        
+        //  Visualisation
+        G4VisAttributes* AFRODITE_MathisTC_VisAtt = new G4VisAttributes(G4Colour(0.8,0.8,0.8));
+        AFRODITE_MathisTC_VisAtt->SetForceSolid(true);
+        LogicMathisTC->SetVisAttributes(AFRODITE_MathisTC_VisAtt);
+    }
+
     
     //////////////////////////////////////////////////////////
     //                  TARGET DEFINITION
@@ -3850,12 +3905,39 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         
     }
     
+    ////////////////////////////////////////////////////////
+    ////        E498 frame and scatterig chamber        ////
+    ////////////////////////////////////////////////////////
+
+    G4ThreeVector offset_E498FrameAndScatteringChamber = G4ThreeVector(0*cm, 0*cm, 0*cm);
     
+    CADMesh * mesh_E498FrameAndScatteringChamber = new CADMesh("../K600-ALBA/Mesh-Models/STRUCTURES/E498/E498Frame.ply", "PLY", mm, offset_E498FrameAndScatteringChamber, false);
+    
+    G4VSolid * Solid_E498FrameAndScatteringChamber = mesh_E498FrameAndScatteringChamber->TessellatedMesh();
+    
+    G4LogicalVolume* Logic_E498FrameAndScatteringChamber = new G4LogicalVolume(Solid_E498FrameAndScatteringChamber, G4_Al_Material, "Logic_498FrameAndScatteringChamber", 0, 0, 0);
+
+    new G4PVPlacement(0,               // no rotation
+                      G4ThreeVector(), // at (x,y,z)
+                      Logic_E498FrameAndScatteringChamber,       // its logical volume
+                      "E498FrameAndScatteringChamber",       // its name
+                      LogicVacuumChamber,         // its mother  volume
+                      false,           // no boolean operations
+                      0,               // copy number
+                      fCheckOverlaps); // checking overlaps
+    
+    
+    G4VisAttributes* E498FrameAndScatteringChamber_VisAtt= new G4VisAttributes(G4Colour(0.85, 0.85, 0.85));
+    E498FrameAndScatteringChamber_VisAtt->SetVisibility(true);
+    E498FrameAndScatteringChamber_VisAtt->SetForceSolid(true);
+    Logic_E498FrameAndScatteringChamber->SetVisAttributes(E498FrameAndScatteringChamber_VisAtt);
+
+
     ////////////////////////////////////////////
     ////        LaBr3Ce DEFINITION          ////
     ////////////////////////////////////////////
 
-    
+    /*
     double LaBr3Ce_encasement_innerRadius = 45.0; // mm
     double LaBr3Ce_encasement_outerRadius = 50.0; // mm
 
@@ -3867,13 +3949,13 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     
     double crystalBase_outerRadius = 45.0; // mm
     double LaBr3Ce_window_axialLength = 5.0; // mm
-    
+    */
     
     //----------------------------------------------------
     //      Work for Christiaan/Mathis/Katarzyna
-    /*
-    double LaBr3Ce_encasement_innerRadius = 45.1; // mm
-    double LaBr3Ce_encasement_outerRadius = 50.0; // mm
+    
+    double LaBr3Ce_encasement_innerRadius = (88.9/2.0); // mm
+    double LaBr3Ce_encasement_outerRadius = (88.9/2.0) + 5.0; // mm
     
     double LaBe3CeCrystal_cone_innerRadius;
     double LaBe3CeCrystal_cone_outerRadius;
@@ -3881,9 +3963,9 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     double LaBr3Ce_encasement_cone_innerRadius;
     double LaBr3Ce_encasement_cone_outerRadius = LaBr3Ce_encasement_outerRadius;
     
-    double crystalBase_outerRadius = 45.0; // mm
+    double crystalBase_outerRadius = (88.9/2.0); // mm
     double LaBr3Ce_window_axialLength = 5.0; // mm
-    */
+    
     
     /*
     LaBr3Ce_encasement_innerRadius = ;
@@ -4120,6 +4202,9 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         
         if(setPreconfiguredVersion && LaBr3CeSetupVersion==-1)
         {
+            //--------------------------------
+            //      Work for Christiaan/Mathis/Katarzyna
+            /*
             //  LaBr3Ce 1
             LaBr3Ce_Presence[0] = true;
             LaBr3Ce_Distance[0] = 246.4*mm;
@@ -4150,7 +4235,145 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
             G4ThreeVector positionDetector(x, y, z);
             
             LaBr3Ce_InternalVacuum_position[i] = (LaBr3Ce_Distance[i] + ((LaBr3Ce_crystal_axialLength+LaBr3Ce_window_axialLength)/2.0)*mm)*positionDetector.unit();
+            */
             
+            //--------------------------------
+            //      Work for E498 (Shoken)
+            
+            //  LaBr3Ce 1
+            LaBr3Ce_Presence[0] = true;
+            LaBr3Ce_Distance[0] = 130.0*mm;
+            LaBr3Ce_theta[0] = 90.0*deg;
+            LaBr3Ce_phi[0] = 45.0*deg;
+            
+            //  LaBr3Ce 2
+            LaBr3Ce_Presence[1] = true;
+            LaBr3Ce_Distance[1] = 130.0*mm;
+            LaBr3Ce_theta[1] = 90.0*deg;
+            LaBr3Ce_phi[1] = 315.0*deg;
+            
+            //  LaBr3Ce 3
+            LaBr3Ce_Presence[2] = true;
+            LaBr3Ce_Distance[2] = 130.0*mm;
+            LaBr3Ce_theta[2] = 90.0*deg;
+            LaBr3Ce_phi[2] = 225.0*deg;
+            
+            //  LaBr3Ce 4
+            LaBr3Ce_Presence[3] = true;
+            LaBr3Ce_Distance[3] = 130.0*mm;
+            LaBr3Ce_theta[3] = 90.0*deg;
+            LaBr3Ce_phi[3] = 135.0*deg;
+            
+            //  LaBr3Ce 5
+            LaBr3Ce_Presence[4] = true;
+            LaBr3Ce_Distance[4] = 130.0*mm;
+            LaBr3Ce_theta[4] = 135.0*deg;
+            LaBr3Ce_phi[4] = 90.0*deg;
+            
+            //  LaBr3Ce 6
+            LaBr3Ce_Presence[5] = true;
+            LaBr3Ce_Distance[5] = 130.0*mm;
+            LaBr3Ce_theta[5] = 135.0*deg;
+            LaBr3Ce_phi[5] = 0.0*deg;
+            
+            //  LaBr3Ce 7
+            LaBr3Ce_Presence[6] = true;
+            LaBr3Ce_Distance[6] = 130.0*mm;
+            LaBr3Ce_theta[6] = 135.0*deg;
+            LaBr3Ce_phi[6] = 270.0*deg;
+            
+            //  LaBr3Ce 8
+            LaBr3Ce_Presence[7] = true;
+            LaBr3Ce_Distance[7] = 130.0*mm;
+            LaBr3Ce_theta[7] = 135.0*deg;
+            LaBr3Ce_phi[7] = 180.0*deg;
+
+            //----------------------------------------------------------------
+            double x = std::sin(LaBr3Ce_theta[i])*std::cos(LaBr3Ce_phi[i]);
+            double y = std::sin(LaBr3Ce_theta[i])*std::sin(LaBr3Ce_phi[i]);
+            double z = std::cos(LaBr3Ce_theta[i]);
+            G4ThreeVector positionDetector(x, y, z);
+            
+            LaBr3Ce_InternalVacuum_position[i] = (LaBr3Ce_Distance[i] + ((LaBr3Ce_crystal_axialLength+LaBr3Ce_window_axialLength)/2.0)*mm)*positionDetector.unit();
+            
+            // Actual diameter is 91.0 mm
+            G4Tubs *Solid_Attenuator_Pb = new G4Tubs("Solid_Attenuator_Pb", 0.0*mm, (90.0/2.0)*mm, (2.0/2.0)*mm, 0.*deg, 360*deg);
+            G4LogicalVolume *Logic_Attenuator_Pb = new G4LogicalVolume(Solid_Attenuator_Pb, G4_Pb_Material, "Logic_Attenuator_Pb", 0, 0, 0);
+
+            G4Tubs *Solid_Attenuator_Cu = new G4Tubs("Solid_Attenuator_Pb", 0.0*mm, (90.0/2.0)*mm, (4.0/2.0)*mm, 0.*deg, 360*deg);
+            G4LogicalVolume *Logic_Attenuator_Cu = new G4LogicalVolume(Solid_Attenuator_Cu, G4_Cu_Material, "Logic_Attenuator_Cu", 0, 0, 0);
+
+            double t = 184 + 115 + 51;
+            double r = 184/t;
+            double g = 115/t;
+            double b = 51/t;
+            
+            G4VisAttributes* Attenuator_VisAtt= new G4VisAttributes(G4Colour(r, g, b));
+            Attenuator_VisAtt->SetVisibility(true);
+            Attenuator_VisAtt->SetForceSolid(true);
+            Logic_Attenuator_Pb->SetVisAttributes(Attenuator_VisAtt);
+            Logic_Attenuator_Cu->SetVisAttributes(Attenuator_VisAtt);
+
+            //----------------------------------------------------------------
+            G4ThreeVector positionVector = LaBr3Ce_InternalVacuum_position[i].unit();
+            
+            G4ThreeVector positionVector_z = positionVector.unit();
+            G4ThreeVector positionVector_y = (positionVector.orthogonal()).unit();
+            G4ThreeVector positionVector_x = (positionVector_y.cross(positionVector_z)).unit();
+            positionVector_z = -positionVector_z;
+            positionVector_y = -positionVector_y;
+            
+            //----------------------------------------------------------------
+            G4RotationMatrix rotmPrime(positionVector_x, positionVector_y, positionVector_z);
+            
+            /*
+            G4RotationMatrix LaBr3Ce_Attenuator_rotm[4];
+            if(i==0)
+            {
+                LaBr3Ce_Attenuator_rotm[0].rotateZ(45.0*deg);
+            }
+            else if(i==1)
+            {
+                LaBr3Ce_Attenuator_rotm[1].rotateZ(((90.0*1.0) + 45.0)*deg);
+            }
+            else if(i==2)
+            {
+                LaBr3Ce_Attenuator_rotm[1].rotateZ(((90.0*2.0) + 45.0)*deg);
+            }
+            else if(i==3)
+            {
+                LaBr3Ce_Attenuator_rotm[1].rotateZ(((90.0*3.0) + 45.0)*deg);
+            }
+            */
+            //----------------------------------------------------------------
+            G4ThreeVector positionAttenuator_Pb = (115.0+1.0)*LaBr3Ce_InternalVacuum_position[i].unit();
+            G4ThreeVector positionAttenuator_Cu = (115.0+2.0+2.0)*LaBr3Ce_InternalVacuum_position[i].unit();
+            
+            G4Transform3D LaBr3Ce_Attenuator_transform_Pb = G4Transform3D(rotmPrime,positionAttenuator_Pb);
+            G4Transform3D LaBr3Ce_Attenuator_transform_Cu = G4Transform3D(rotmPrime,positionAttenuator_Cu);
+
+            if(i<4)
+            {
+                new G4PVPlacement(LaBr3Ce_Attenuator_transform_Pb,   // transformation matrix
+                                  Logic_Attenuator_Pb,       // its logical volume
+                                  "Attenuator_Pb",       // its name
+                                  LogicVacuumChamber,         // its mother  volume
+                                  false,           // no boolean operations
+                                  i,               // copy number
+                                  fCheckOverlaps); // checking overlaps
+
+                new G4PVPlacement(LaBr3Ce_Attenuator_transform_Cu,   // transformation matrix
+                                  Logic_Attenuator_Cu,       // its logical volume
+                                  "Attenuator_Cu",       // its name
+                                  LogicVacuumChamber,         // its mother  volume
+                                  false,           // no boolean operations
+                                  i,               // copy number
+                                  fCheckOverlaps); // checking overlaps
+
+            }
+            
+            //G4RotationMatrix    LaBr3Ce_rotm[numberOf_LaBr3Ce];
+
             //LaBr3Ce_InternalVacuum_position[i] = (LaBr3Ce_Distance[i] + ((LaBr3Ce_crystal_axialLength+LaBr3Ce_window_axialLength)/2.0)*mm)*G4ThreeVector(std::sin(LaBr3Ce_theta[i]) * std::cos(LaBr3Ce_phi[i]), std::sin(LaBr3Ce_theta[i]) * std::sin(LaBr3Ce_phi[i]), std::cos(LaBr3Ce_theta[i]));
         }
         else if(setPreconfiguredVersion && LaBr3CeSetupVersion>=0 && i>=20)

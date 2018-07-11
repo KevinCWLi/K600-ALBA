@@ -103,7 +103,8 @@ const G4int     numberOf_LEPS = 6;
 
 ///////////////     LEPS LaBr3Ce     ///////////////////
 //const G4int     numberOf_LaBr3Ce = 20;
-const G4int     numberOf_LaBr3Ce = 4;
+//const G4int     numberOf_LaBr3Ce = 4;
+const G4int     numberOf_LaBr3Ce = 8;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -479,6 +480,9 @@ private:
     //  K600 Target Backing
     G4bool      K600_TargetBacking_Presence;
     
+    /////////////////////////////////////
+    //  K600 AFRODITE "Mathis" Target Chamber
+    G4bool      AFRODITE_MathisTC_Presence;
 };
 
 // inline functions

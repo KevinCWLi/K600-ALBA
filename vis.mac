@@ -4,7 +4,8 @@
 #/vis/open OGL 800x600-0+0
 #/vis/open OGL 1600x1200-0+0
 # Use to the the lighting origin
-/vis/viewer/set/lightsThetaPhi 40 140
+#/vis/viewer/set/lightsThetaPhi 40 140
+/vis/viewer/set/lightsThetaPhi 120 140
 #
 #
 /run/printProgress 10000
