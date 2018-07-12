@@ -180,8 +180,8 @@ fEventAction(eventAction)
 
     
     //----------------------------------------------------
-    nEnergies += 350;
-    nParticlesPerEnergy = 5000000; // 50000000 particles to be simulated
+    nEnergies = 35*5;
+    nParticlesPerEnergy = 10000; // 50000000 particles to be simulated
     
     double energyMin = 0.0;
     double energyMax = 35.0;
@@ -475,7 +475,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     }
     else
     {
-        initialParticleKineticEnergy = 30.0*MeV;
+        initialParticleKineticEnergy = 50.0*MeV;
     }
     
     fParticleGun->SetParticleEnergy(initialParticleKineticEnergy);
