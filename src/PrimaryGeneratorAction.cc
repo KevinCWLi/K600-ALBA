@@ -478,6 +478,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         initialParticleKineticEnergy = 50.0*MeV;
     }
     
+    initialParticleKineticEnergy = 15.0*MeV;
+    
     fParticleGun->SetParticleEnergy(initialParticleKineticEnergy);
     fEventAction->SetInitialParticleKineticEnergy(initialParticleKineticEnergy);
     

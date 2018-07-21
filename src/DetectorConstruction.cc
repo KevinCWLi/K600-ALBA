@@ -3917,7 +3917,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     
     G4LogicalVolume* Logic_E498FrameAndScatteringChamber = new G4LogicalVolume(Solid_E498FrameAndScatteringChamber, G4_Al_Material, "Logic_498FrameAndScatteringChamber", 0, 0, 0);
 
-    /*
+    
     new G4PVPlacement(0,               // no rotation
                       G4ThreeVector(), // at (x,y,z)
                       Logic_E498FrameAndScatteringChamber,       // its logical volume
@@ -3926,7 +3926,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                       false,           // no boolean operations
                       0,               // copy number
                       fCheckOverlaps); // checking overlaps
-    */
+    
     
     G4VisAttributes* E498FrameAndScatteringChamber_VisAtt= new G4VisAttributes(G4Colour(0.85, 0.85, 0.85));
     E498FrameAndScatteringChamber_VisAtt->SetVisibility(true);

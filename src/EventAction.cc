@@ -659,7 +659,9 @@ void EventAction::EndOfEventAction(const G4Event* event)
     {
         for(G4int k=0; k<LaBr3Ce_TotalTimeSamples; k++)
         {
-            if(G4RandGauss::shoot(LaBr3Ce_EDep[i][k], 0.7) >= LaBr3Ce_LaBr3CeCrystal_ThresholdEnergy)
+            double laBr3Ce_FWHM_15MeV = (25.0/sqrt(662.0))*sqrt(LaBr3Ce_EDep[i][k]);
+            
+            if(G4RandGauss::shoot(LaBr3Ce_EDep[i][k], laBr3Ce_FWHM_15MeV/2.35) >= LaBr3Ce_LaBr3CeCrystal_ThresholdEnergy)
             {
                 //------------------------------------------------
                 LaBr3Ce_Number_vec.push_back(i);
@@ -701,7 +703,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
                 LaBr3Ce_Phi_vec.push_back(phi);
 
                 //------------------------------------------------
-                LaBr3Ce_EDep[i][k] = abs(G4RandGauss::shoot(LaBr3Ce_EDep[i][k], 1.7));
+                LaBr3Ce_EDep[i][k] = abs(G4RandGauss::shoot(LaBr3Ce_EDep[i][k], laBr3Ce_FWHM_15MeV/2.35));
                 LaBr3Ce_Energy_vec.push_back(LaBr3Ce_EDep[i][k]);
 
                 eventN_LaBr3Ce++;
