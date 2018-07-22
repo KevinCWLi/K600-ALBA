@@ -659,7 +659,8 @@ void EventAction::EndOfEventAction(const G4Event* event)
     {
         for(G4int k=0; k<LaBr3Ce_TotalTimeSamples; k++)
         {
-            double laBr3Ce_FWHM_15MeV = (25.0/sqrt(662.0))*sqrt(LaBr3Ce_EDep[i][k]);
+            //double laBr3Ce_FWHM_15MeV = (25.0/sqrt(662.0))*sqrt(LaBr3Ce_EDep[i][k]);
+            double laBr3Ce_FWHM_15MeV = 2.0*(25.0/sqrt(662.0))*sqrt(LaBr3Ce_EDep[i][k]);
             
             if(G4RandGauss::shoot(LaBr3Ce_EDep[i][k], laBr3Ce_FWHM_15MeV/2.35) >= LaBr3Ce_LaBr3CeCrystal_ThresholdEnergy)
             {

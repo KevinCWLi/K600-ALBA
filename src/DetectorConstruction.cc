@@ -3917,7 +3917,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     
     G4LogicalVolume* Logic_E498FrameAndScatteringChamber = new G4LogicalVolume(Solid_E498FrameAndScatteringChamber, G4_Al_Material, "Logic_498FrameAndScatteringChamber", 0, 0, 0);
 
-    
+    /*
     new G4PVPlacement(0,               // no rotation
                       G4ThreeVector(), // at (x,y,z)
                       Logic_E498FrameAndScatteringChamber,       // its logical volume
@@ -3926,7 +3926,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                       false,           // no boolean operations
                       0,               // copy number
                       fCheckOverlaps); // checking overlaps
-    
+    */
     
     G4VisAttributes* E498FrameAndScatteringChamber_VisAtt= new G4VisAttributes(G4Colour(0.85, 0.85, 0.85));
     E498FrameAndScatteringChamber_VisAtt->SetVisibility(true);
@@ -3978,7 +3978,12 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     //  This sets the tapering
     //----------------------------------------------------
     
-    if(LaBr3CeSetupVersion==-1)
+    if(LaBr3CeSetupVersion==-2)
+    {
+        //      No tapering
+        LaBe3CeCrystal_cone_outerRadius = crystalBase_outerRadius; // mm
+    }
+    else if(LaBr3CeSetupVersion==-1)
     {
         //      No tapering
         LaBe3CeCrystal_cone_outerRadius = crystalBase_outerRadius; // mm
@@ -4024,6 +4029,10 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     double LaBr3Ce_crystal_axialLength = 203.0; // mm
     double LaBr3Ce_crystalCone_axialLength;
 
+    if(LaBr3CeSetupVersion==-2)
+    {
+        LaBr3Ce_crystalCone_axialLength = 20.0; // mm
+    }
     if(LaBr3CeSetupVersion==-1)
     {
         LaBr3Ce_crystalCone_axialLength = 20.0; // mm
@@ -4090,7 +4099,12 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     }
     
     G4LogicalVolume* Logic_LaBr3Ce_Window;
-    if(LaBr3CeSetupVersion==-1)
+    
+    if(LaBr3CeSetupVersion==-2)
+    {
+        Logic_LaBr3Ce_Window = new G4LogicalVolume(Solid_LaBr3Ce_Window, G4_Al_Material, "Logic_LaBr3Ce_Window", 0, 0, 0);
+    }
+    else if(LaBr3CeSetupVersion==-1)
     {
         Logic_LaBr3Ce_Window = new G4LogicalVolume(Solid_LaBr3Ce_Window, G4_Al_Material, "Logic_LaBr3Ce_Window", 0, 0, 0);
     }
@@ -4126,6 +4140,10 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     {
         if(setPreconfiguredVersion)
         {
+            if(LaBr3CeSetupVersion==-2)
+            {
+                Logic_LaBr3Ce_InternalVacuum[i] = new G4LogicalVolume(Solid_LaBr3Ce_InternalVacuum, G4_Galactic_Material, "LogicLaBr3CeInternalVacuum", 0, 0, 0);
+            }
             if(LaBr3CeSetupVersion==-1)
             {
                 Logic_LaBr3Ce_InternalVacuum[i] = new G4LogicalVolume(Solid_LaBr3Ce_InternalVacuum, G4_Galactic_Material, "LogicLaBr3CeInternalVacuum", 0, 0, 0);
@@ -4201,43 +4219,131 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         //LaBr3Ce_InternalVacuum_position[i] = (13.2*cm + ((LaBr3Ce_crystal_axialLength+LaBr3Ce_window_axialLength)/2.0)*mm)*G4ThreeVector(std::sin(LaBr3Ce_theta[i]) * std::cos(LaBr3Ce_phi[i]), std::sin(LaBr3Ce_theta[i]) * std::sin(LaBr3Ce_phi[i]), std::cos(LaBr3Ce_theta[i]));
         //LaBr3Ce_InternalVacuum_position[i] = (8.9632*cm + ((LaBr3Ce_crystal_axialLength+LaBr3Ce_window_axialLength)/2.0)*mm)*G4ThreeVector(std::sin(LaBr3Ce_theta[i]) * std::cos(LaBr3Ce_phi[i]), std::sin(LaBr3Ce_theta[i]) * std::sin(LaBr3Ce_phi[i]), std::cos(LaBr3Ce_theta[i]));
         
-        if(setPreconfiguredVersion && LaBr3CeSetupVersion==-1)
+        if(setPreconfiguredVersion && LaBr3CeSetupVersion==-2)
         {
             //--------------------------------
-            //      Work for Christiaan/Mathis/Katarzyna
-            /*
+            //      Work for E498 (Shoken)
+            
             //  LaBr3Ce 1
             LaBr3Ce_Presence[0] = true;
-            LaBr3Ce_Distance[0] = 246.4*mm;
+            LaBr3Ce_Distance[0] = 130.0*mm;
             LaBr3Ce_theta[0] = 90.0*deg;
-            LaBr3Ce_phi[0] = 151.0*deg;
+            LaBr3Ce_phi[0] = 45.0*deg;
             
             //  LaBr3Ce 2
             LaBr3Ce_Presence[1] = true;
-            LaBr3Ce_Distance[1] = 247.65*mm;
-            LaBr3Ce_theta[1] = 135.0*deg;
-            LaBr3Ce_phi[1] = 180.0*deg;
+            LaBr3Ce_Distance[1] = 130.0*mm;
+            LaBr3Ce_theta[1] = 90.0*deg;
+            LaBr3Ce_phi[1] = 315.0*deg;
             
             //  LaBr3Ce 3
             LaBr3Ce_Presence[2] = true;
-            LaBr3Ce_Distance[2] = 217.8*mm;
-            LaBr3Ce_theta[2] = 135.0*deg;
-            LaBr3Ce_phi[2] = 0.0*deg;
+            LaBr3Ce_Distance[2] = 130.0*mm;
+            LaBr3Ce_theta[2] = 90.0*deg;
+            LaBr3Ce_phi[2] = 225.0*deg;
             
             //  LaBr3Ce 4
             LaBr3Ce_Presence[3] = true;
-            LaBr3Ce_Distance[3] = 236.8*mm;
+            LaBr3Ce_Distance[3] = 130.0*mm;
             LaBr3Ce_theta[3] = 90.0*deg;
-            LaBr3Ce_phi[3] = 62.0*deg;
+            LaBr3Ce_phi[3] = 135.0*deg;
             
+            //  LaBr3Ce 5
+            LaBr3Ce_Presence[4] = true;
+            LaBr3Ce_Distance[4] = 130.0*mm;
+            LaBr3Ce_theta[4] = 135.0*deg;
+            LaBr3Ce_phi[4] = 90.0*deg;
+            
+            //  LaBr3Ce 6
+            LaBr3Ce_Presence[5] = true;
+            LaBr3Ce_Distance[5] = 130.0*mm;
+            LaBr3Ce_theta[5] = 135.0*deg;
+            LaBr3Ce_phi[5] = 0.0*deg;
+            
+            //  LaBr3Ce 7
+            LaBr3Ce_Presence[6] = true;
+            LaBr3Ce_Distance[6] = 130.0*mm;
+            LaBr3Ce_theta[6] = 135.0*deg;
+            LaBr3Ce_phi[6] = 270.0*deg;
+            
+            //  LaBr3Ce 8
+            LaBr3Ce_Presence[7] = true;
+            LaBr3Ce_Distance[7] = 130.0*mm;
+            LaBr3Ce_theta[7] = 135.0*deg;
+            LaBr3Ce_phi[7] = 180.0*deg;
+            
+            //----------------------------------------------------------------
             double x = std::sin(LaBr3Ce_theta[i])*std::cos(LaBr3Ce_phi[i]);
             double y = std::sin(LaBr3Ce_theta[i])*std::sin(LaBr3Ce_phi[i]);
             double z = std::cos(LaBr3Ce_theta[i]);
             G4ThreeVector positionDetector(x, y, z);
             
-            LaBr3Ce_InternalVacuum_position[i] = (LaBr3Ce_Distance[i] + ((LaBr3Ce_crystal_axialLength+LaBr3Ce_window_axialLength)/2.0)*mm)*positionDetector.unit();
-            */
+            LaBr3Ce_InternalVacuum_position[i] = (LaBr3Ce_Distance[i] + ((LaBr3Ce_crystal_axialLength+LaBr3Ce_window_axialLength)/2.0)*mm + (5.0)*mm)*positionDetector.unit();
             
+            // Actual diameter is 91.0 mm
+            G4Tubs *Solid_Attenuator_Pb = new G4Tubs("Solid_Attenuator_Pb", 0.0*mm, (90.0/2.0)*mm, (2.0/2.0)*mm, 0.*deg, 360*deg);
+            G4LogicalVolume *Logic_Attenuator_Pb = new G4LogicalVolume(Solid_Attenuator_Pb, G4_Pb_Material, "Logic_Attenuator_Pb", 0, 0, 0);
+            
+            G4Tubs *Solid_Attenuator_Cu = new G4Tubs("Solid_Attenuator_Pb", 0.0*mm, (90.0/2.0)*mm, (4.0/2.0)*mm, 0.*deg, 360*deg);
+            G4LogicalVolume *Logic_Attenuator_Cu = new G4LogicalVolume(Solid_Attenuator_Cu, G4_Cu_Material, "Logic_Attenuator_Cu", 0, 0, 0);
+            
+            double t = 184 + 115 + 51;
+            double r = 184/t;
+            double g = 115/t;
+            double b = 51/t;
+            
+            G4VisAttributes* Attenuator_VisAtt_Pb= new G4VisAttributes(G4Colour(0.6, 0.6, 0.6));
+            Attenuator_VisAtt_Pb->SetVisibility(true);
+            Attenuator_VisAtt_Pb->SetForceSolid(true);
+            Logic_Attenuator_Pb->SetVisAttributes(Attenuator_VisAtt_Pb);
+            G4VisAttributes* Attenuator_VisAtt_Cu= new G4VisAttributes(G4Colour(r, g, b));
+            Attenuator_VisAtt_Cu->SetVisibility(true);
+            Attenuator_VisAtt_Cu->SetForceSolid(true);
+            Logic_Attenuator_Cu->SetVisAttributes(Attenuator_VisAtt_Cu);
+            
+            //----------------------------------------------------------------
+            G4ThreeVector positionVector = LaBr3Ce_InternalVacuum_position[i].unit();
+            
+            G4ThreeVector positionVector_z = positionVector.unit();
+            G4ThreeVector positionVector_y = (positionVector.orthogonal()).unit();
+            G4ThreeVector positionVector_x = (positionVector_y.cross(positionVector_z)).unit();
+            positionVector_z = -positionVector_z;
+            positionVector_y = -positionVector_y;
+            
+            //----------------------------------------------------------------
+            G4RotationMatrix rotmPrime(positionVector_x, positionVector_y, positionVector_z);
+
+            //----------------------------------------------------------------
+            G4ThreeVector positionAttenuator_Pb = (115.0+1.0)*LaBr3Ce_InternalVacuum_position[i].unit();
+            G4ThreeVector positionAttenuator_Cu = (115.0+2.0+2.0)*LaBr3Ce_InternalVacuum_position[i].unit();
+            
+            if(i>4)
+            {
+                positionAttenuator_Cu = (LaBr3Ce_Distance[i] + 5.0*mm - 2.0*mm)*LaBr3Ce_InternalVacuum_position[i].unit();
+                positionAttenuator_Pb = (LaBr3Ce_Distance[i] + 5.0*mm - 4.0*mm - 1.0*mm)*LaBr3Ce_InternalVacuum_position[i].unit();
+            }
+            
+            G4Transform3D LaBr3Ce_Attenuator_transform_Pb = G4Transform3D(rotmPrime,positionAttenuator_Pb);
+            G4Transform3D LaBr3Ce_Attenuator_transform_Cu = G4Transform3D(rotmPrime,positionAttenuator_Cu);
+            
+            new G4PVPlacement(LaBr3Ce_Attenuator_transform_Pb,   // transformation matrix
+                              Logic_Attenuator_Pb,       // its logical volume
+                              "Attenuator_Pb",       // its name
+                              LogicVacuumChamber,         // its mother  volume
+                              false,           // no boolean operations
+                              i,               // copy number
+                              fCheckOverlaps); // checking overlaps
+            
+            new G4PVPlacement(LaBr3Ce_Attenuator_transform_Cu,   // transformation matrix
+                              Logic_Attenuator_Cu,       // its logical volume
+                              "Attenuator_Cu",       // its name
+                              LogicVacuumChamber,         // its mother  volume
+                              false,           // no boolean operations
+                              i,               // copy number
+                              fCheckOverlaps); // checking overlaps
+        }
+        else if(setPreconfiguredVersion && LaBr3CeSetupVersion==-1)
+        {
             //--------------------------------
             //      Work for E498 (Shoken)
             
@@ -4289,12 +4395,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
             LaBr3Ce_theta[7] = 135.0*deg;
             LaBr3Ce_phi[7] = 180.0*deg;
 
-            /*
-            LaBr3Ce_Presence[0] = true;
-            LaBr3Ce_Distance[0] = 0.0*mm;
-            LaBr3Ce_theta[0] = 0.0*deg;
-            LaBr3Ce_phi[0] = 0.0*deg;
-            */
             
             //----------------------------------------------------------------
             double x = std::sin(LaBr3Ce_theta[i])*std::cos(LaBr3Ce_phi[i]);
@@ -4302,30 +4402,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
             double z = std::cos(LaBr3Ce_theta[i]);
             G4ThreeVector positionDetector(x, y, z);
             
-            //LaBr3Ce_InternalVacuum_position[i] = (LaBr3Ce_Distance[i] + ((LaBr3Ce_crystal_axialLength+LaBr3Ce_window_axialLength)/2.0)*mm)*positionDetector.unit();
-            LaBr3Ce_InternalVacuum_position[i] = (LaBr3Ce_Distance[i] + ((LaBr3Ce_crystal_axialLength+LaBr3Ce_window_axialLength)/2.0)*mm + (5.0)*mm)*positionDetector.unit();
+            LaBr3Ce_InternalVacuum_position[i] = (LaBr3Ce_Distance[i] + ((LaBr3Ce_crystal_axialLength+LaBr3Ce_window_axialLength)/2.0)*mm)*positionDetector.unit();
             
-            // Actual diameter is 91.0 mm
-            G4Tubs *Solid_Attenuator_Pb = new G4Tubs("Solid_Attenuator_Pb", 0.0*mm, (90.0/2.0)*mm, (2.0/2.0)*mm, 0.*deg, 360*deg);
-            G4LogicalVolume *Logic_Attenuator_Pb = new G4LogicalVolume(Solid_Attenuator_Pb, G4_Pb_Material, "Logic_Attenuator_Pb", 0, 0, 0);
-
-            G4Tubs *Solid_Attenuator_Cu = new G4Tubs("Solid_Attenuator_Pb", 0.0*mm, (90.0/2.0)*mm, (4.0/2.0)*mm, 0.*deg, 360*deg);
-            G4LogicalVolume *Logic_Attenuator_Cu = new G4LogicalVolume(Solid_Attenuator_Cu, G4_Cu_Material, "Logic_Attenuator_Cu", 0, 0, 0);
-
-            double t = 184 + 115 + 51;
-            double r = 184/t;
-            double g = 115/t;
-            double b = 51/t;
-            
-            G4VisAttributes* Attenuator_VisAtt_Pb= new G4VisAttributes(G4Colour(0.6, 0.6, 0.6));
-            Attenuator_VisAtt_Pb->SetVisibility(true);
-            Attenuator_VisAtt_Pb->SetForceSolid(true);
-            Logic_Attenuator_Pb->SetVisAttributes(Attenuator_VisAtt_Pb);
-            G4VisAttributes* Attenuator_VisAtt_Cu= new G4VisAttributes(G4Colour(r, g, b));
-            Attenuator_VisAtt_Cu->SetVisibility(true);
-            Attenuator_VisAtt_Cu->SetForceSolid(true);
-            Logic_Attenuator_Cu->SetVisAttributes(Attenuator_VisAtt_Cu);
-
             //----------------------------------------------------------------
             G4ThreeVector positionVector = LaBr3Ce_InternalVacuum_position[i].unit();
             
@@ -4337,80 +4415,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
             
             //----------------------------------------------------------------
             G4RotationMatrix rotmPrime(positionVector_x, positionVector_y, positionVector_z);
-            
-            /*
-            G4RotationMatrix LaBr3Ce_Attenuator_rotm[4];
-            if(i==0)
-            {
-                LaBr3Ce_Attenuator_rotm[0].rotateZ(45.0*deg);
-            }
-            else if(i==1)
-            {
-                LaBr3Ce_Attenuator_rotm[1].rotateZ(((90.0*1.0) + 45.0)*deg);
-            }
-            else if(i==2)
-            {
-                LaBr3Ce_Attenuator_rotm[1].rotateZ(((90.0*2.0) + 45.0)*deg);
-            }
-            else if(i==3)
-            {
-                LaBr3Ce_Attenuator_rotm[1].rotateZ(((90.0*3.0) + 45.0)*deg);
-            }
-            */
-            //----------------------------------------------------------------
-            G4ThreeVector positionAttenuator_Pb = (115.0+1.0)*LaBr3Ce_InternalVacuum_position[i].unit();
-            G4ThreeVector positionAttenuator_Cu = (115.0+2.0+2.0)*LaBr3Ce_InternalVacuum_position[i].unit();
-            
-            if(i>4)
-            {
-                positionAttenuator_Cu = (LaBr3Ce_Distance[i] - 2.0*mm)*LaBr3Ce_InternalVacuum_position[i].unit();
-                positionAttenuator_Pb = (LaBr3Ce_Distance[i] - 5.0*mm)*LaBr3Ce_InternalVacuum_position[i].unit();
-            }
-            
-            G4Transform3D LaBr3Ce_Attenuator_transform_Pb = G4Transform3D(rotmPrime,positionAttenuator_Pb);
-            G4Transform3D LaBr3Ce_Attenuator_transform_Cu = G4Transform3D(rotmPrime,positionAttenuator_Cu);
-
-            new G4PVPlacement(LaBr3Ce_Attenuator_transform_Pb,   // transformation matrix
-                              Logic_Attenuator_Pb,       // its logical volume
-                              "Attenuator_Pb",       // its name
-                              LogicVacuumChamber,         // its mother  volume
-                              false,           // no boolean operations
-                              i,               // copy number
-                              fCheckOverlaps); // checking overlaps
-            
-            new G4PVPlacement(LaBr3Ce_Attenuator_transform_Cu,   // transformation matrix
-                              Logic_Attenuator_Cu,       // its logical volume
-                              "Attenuator_Cu",       // its name
-                              LogicVacuumChamber,         // its mother  volume
-                              false,           // no boolean operations
-                              i,               // copy number
-                              fCheckOverlaps); // checking overlaps
-            
-
-            /*
-            if(i<4)
-            {
-                new G4PVPlacement(LaBr3Ce_Attenuator_transform_Pb,   // transformation matrix
-                                  Logic_Attenuator_Pb,       // its logical volume
-                                  "Attenuator_Pb",       // its name
-                                  LogicVacuumChamber,         // its mother  volume
-                                  false,           // no boolean operations
-                                  i,               // copy number
-                                  fCheckOverlaps); // checking overlaps
-
-                new G4PVPlacement(LaBr3Ce_Attenuator_transform_Cu,   // transformation matrix
-                                  Logic_Attenuator_Cu,       // its logical volume
-                                  "Attenuator_Cu",       // its name
-                                  LogicVacuumChamber,         // its mother  volume
-                                  false,           // no boolean operations
-                                  i,               // copy number
-                                  fCheckOverlaps); // checking overlaps
-            }
-            */
-            
-            //G4RotationMatrix    LaBr3Ce_rotm[numberOf_LaBr3Ce];
-
-            //LaBr3Ce_InternalVacuum_position[i] = (LaBr3Ce_Distance[i] + ((LaBr3Ce_crystal_axialLength+LaBr3Ce_window_axialLength)/2.0)*mm)*G4ThreeVector(std::sin(LaBr3Ce_theta[i]) * std::cos(LaBr3Ce_phi[i]), std::sin(LaBr3Ce_theta[i]) * std::sin(LaBr3Ce_phi[i]), std::cos(LaBr3Ce_theta[i]));
         }
         else if(setPreconfiguredVersion && LaBr3CeSetupVersion>=0 && i>=20)
         {
@@ -5344,6 +5348,11 @@ void DetectorConstruction::SetupPreconfiguredVersion(int a)
     LaBR3Ce_automaticOrientation = true;
     configuration_truncatedIcosahedron_hexagons = true;
 
+    if(LaBr3CeSetupVersion==-2)
+    {
+        //--------------------------------
+        //      Work for E498
+    }
     if(LaBr3CeSetupVersion==-1)
     {
         //--------------------------------
