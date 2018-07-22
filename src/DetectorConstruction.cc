@@ -776,8 +776,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     //------------------------------------------------
     //      PRECONFIGURED SETUPS
     
+    //      Work for E498
+    SetupPreconfiguredVersion(-2);
+
     //      Work for Christiaan/Mathis/Katarzyna
-    SetupPreconfiguredVersion(-1);
+    //SetupPreconfiguredVersion(-1);
 
     //  No tapering
     //  LaBR3Ce_GlobalDistance = 13.2*cm;
@@ -4344,58 +4347,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         }
         else if(setPreconfiguredVersion && LaBr3CeSetupVersion==-1)
         {
-            //--------------------------------
-            //      Work for E498 (Shoken)
-            
-            //  LaBr3Ce 1
-            LaBr3Ce_Presence[0] = true;
-            LaBr3Ce_Distance[0] = 130.0*mm;
-            LaBr3Ce_theta[0] = 90.0*deg;
-            LaBr3Ce_phi[0] = 45.0*deg;
-            
-            //  LaBr3Ce 2
-            LaBr3Ce_Presence[1] = true;
-            LaBr3Ce_Distance[1] = 130.0*mm;
-            LaBr3Ce_theta[1] = 90.0*deg;
-            LaBr3Ce_phi[1] = 315.0*deg;
-            
-            //  LaBr3Ce 3
-            LaBr3Ce_Presence[2] = true;
-            LaBr3Ce_Distance[2] = 130.0*mm;
-            LaBr3Ce_theta[2] = 90.0*deg;
-            LaBr3Ce_phi[2] = 225.0*deg;
-            
-            //  LaBr3Ce 4
-            LaBr3Ce_Presence[3] = true;
-            LaBr3Ce_Distance[3] = 130.0*mm;
-            LaBr3Ce_theta[3] = 90.0*deg;
-            LaBr3Ce_phi[3] = 135.0*deg;
-            
-            //  LaBr3Ce 5
-            LaBr3Ce_Presence[4] = true;
-            LaBr3Ce_Distance[4] = 130.0*mm;
-            LaBr3Ce_theta[4] = 135.0*deg;
-            LaBr3Ce_phi[4] = 90.0*deg;
-            
-            //  LaBr3Ce 6
-            LaBr3Ce_Presence[5] = true;
-            LaBr3Ce_Distance[5] = 130.0*mm;
-            LaBr3Ce_theta[5] = 135.0*deg;
-            LaBr3Ce_phi[5] = 0.0*deg;
-            
-            //  LaBr3Ce 7
-            LaBr3Ce_Presence[6] = true;
-            LaBr3Ce_Distance[6] = 130.0*mm;
-            LaBr3Ce_theta[6] = 135.0*deg;
-            LaBr3Ce_phi[6] = 270.0*deg;
-            
-            //  LaBr3Ce 8
-            LaBr3Ce_Presence[7] = true;
-            LaBr3Ce_Distance[7] = 130.0*mm;
-            LaBr3Ce_theta[7] = 135.0*deg;
-            LaBr3Ce_phi[7] = 180.0*deg;
-
-            
             //----------------------------------------------------------------
             double x = std::sin(LaBr3Ce_theta[i])*std::cos(LaBr3Ce_phi[i]);
             double y = std::sin(LaBr3Ce_theta[i])*std::sin(LaBr3Ce_phi[i]);
