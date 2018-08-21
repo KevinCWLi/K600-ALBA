@@ -180,8 +180,8 @@ fEventAction(eventAction)
 
     
     //----------------------------------------------------
-    nEnergies += 200;
-    nParticlesPerEnergy = 2000000; // 400000000 particles to be simulated
+    nEnergies += 50;
+    nParticlesPerEnergy = 1000000; // 50000000 particles to be simulated
     
     double energyMin = 0.0;
     double energyMax = 10.0;
